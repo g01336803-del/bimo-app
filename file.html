@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BIMO — Файл</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    .section-title {
+      font-family: 'Bangers', cursive;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      color: var(--candy-blue);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .limit-note {
+      font-size: 0.75rem;
+      color: rgba(139,175,200,0.5);
+      margin-top: 8px;
+      text-align: center;
+    }
+    .big-file-msg {
+      display: none;
+      padding: 16px;
+      background: rgba(240, 165, 0, 0.1);
+      border: 1px solid rgba(240, 165, 0, 0.4);
+      border-radius: 14px;
+      margin-top: 14px;
+      text-align: center;
+    }
+    .big-file-msg.show { display: block; }
+    .big-file-msg .bf-icon { font-size: 2rem; margin-bottom: 8px; }
+    .big-file-msg .bf-text { color: var(--jake-orange); font-size: 0.9rem; line-height: 1.5; }
+  </style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="page">
+
+  <div class="back-btn" onclick="history.back()">← Назад</div>
+
+  <!-- Mini BMO -->
+  <div class="bmo-wrap" style="margin-bottom: 6px;">
+    <svg class="bmo-svg" style="width:60px;" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+      <rect x="10" y="15" width="100" height="115" rx="14" ry="14" fill="#7BC8A4"/>
+      <rect x="20" y="25" width="80" height="58" rx="8" ry="8" fill="#4A9B7F"/>
+      <rect x="23" y="28" width="74" height="52" rx="6" ry="6" fill="#A8E6CF">
+        <animate attributeName="opacity" values="0.85;1;0.85" dur="3s" repeatCount="indefinite"/>
+      </rect>
+      <ellipse cx="44" cy="50" rx="9" ry="10" fill="white"/>
+      <ellipse cx="76" cy="50" rx="9" ry="10" fill="white"/>
+      <ellipse cx="44" cy="51" rx="5" ry="6" fill="#1B2A3C"/>
+      <ellipse cx="76" cy="51" rx="5" ry="6" fill="#1B2A3C"/>
+      <circle cx="47" cy="48" r="2" fill="white" opacity="0.9"/>
+      <circle cx="79" cy="48" r="2" fill="white" opacity="0.9"/>
+      <path d="M48 68 Q60 76 72 68" stroke="#4A9B7F" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <line x1="20" y1="95" x2="100" y2="95" stroke="#5CA88C" stroke-width="1"/>
+      <circle cx="38" cy="112" r="8" fill="#FF6B9D"/>
+      <circle cx="60" cy="112" r="8" fill="#FFD700"/>
+      <circle cx="82" cy="112" r="8" fill="#74B9FF"/>
+      <rect x="5" y="50" width="5" height="12" rx="2" fill="#5CA88C"/>
+      <rect x="110" y="50" width="5" height="12" rx="2" fill="#5CA88C"/>
+    </svg>
+  </div>
+
+  <h1 class="title" style="font-size:1.5rem; margin-bottom: 2px;">Добавить файл</h1>
+  <p class="subtitle" style="margin-bottom: 18px;">Текстовые файлы → прямо в Obsidian</p>
+
+  <!-- Drop zone card -->
+  <div class="card" style="margin-bottom: 14px;">
+    <div class="section-title">📎 Файл</div>
+
+    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+      <div class="dz-icon">🌟</div>
+      <div class="dz-text">Нажми или перетащи файл</div>
+      <div class="dz-hint">.md, .txt — сохраняются в Obsidian · другие — через чат</div>
+    </div>
+    <input type="file" id="file-input" style="display:none" accept="*/*">
+
+    <!-- File preview -->
+    <div class="file-preview" id="file-preview">
+      <span class="file-icon" id="file-icon">📄</span>
+      <div class="file-info">
+        <div class="file-name" id="file-name"></div>
+        <div class="file-size" id="file-size"></div>
+      </div>
+      <span class="remove-btn" onclick="clearFile()">✕</span>
+    </div>
+
+    <!-- Big file notice -->
+    <div class="big-file-msg" id="big-file-msg">
+      <div class="bf-icon">📤</div>
+      <div class="bf-text">
+        Файл больше 3 КБ или не текстовый.<br>
+        Закрой это окно и отправь файл<br>
+        <strong>прямо в чат с BIMO</strong> — он сохранит!
+      </div>
+    </div>
+
+    <p class="limit-note">Текстовые файлы до ~3 КБ сохраняются автоматически.<br>Большие — отправляй напрямую в чат.</p>
+  </div>
+
+  <!-- Note name -->
+  <div class="card">
+    <div class="section-title">🗒 Заголовок заметки</div>
+    <input type="text" id="note-name" placeholder="Название в Obsidian (без .md)..."/>
+    <div class="limit-note" style="margin-top: 8px;">Оставь пустым — BIMO придумает сам</div>
+
+    <div id="status" class="status"></div>
+  </div>
+
+  <p class="tg-hint">Нажми синюю кнопку внизу, чтобы сохранить</p>
+
+</div>
+
+<script>
+  const tg = window.Telegram.WebApp;
+  tg.ready();
+  tg.expand();
+
+  // Stars
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 40; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2 + 0.5;
+    s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--dur:${Math.random()*3+2}s;--delay:${Math.random()*3}s;`;
+    starsEl.appendChild(s);
+  }
+
+  const TEXT_EXTS = ['md', 'txt', 'csv', 'json', 'yaml', 'yml', 'html', 'htm', 'xml', 'log'];
+  const MAX_TEXT_BYTES = 3000; // safe for sendData (limit 4096 with JSON overhead)
+
+  let fileData = null; // { name, size, content|null, isText, tooBig }
+
+  const dropZone = document.getElementById('drop-zone');
+  const fileInput = document.getElementById('file-input');
+  const previewEl = document.getElementById('file-preview');
+  const bigFileMsgEl = document.getElementById('big-file-msg');
+
+  // Drag-and-drop
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
+  dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('over'); handleFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', () => handleFile(fileInput.files[0]));
+
+  function getExt(name) { return name.split('.').pop().toLowerCase(); }
+
+  function getFileIcon(name) {
+    const ext = getExt(name);
+    const map = { md: '📝', txt: '📄', json: '🔧', csv: '📊', pdf: '📕', jpg: '🖼', jpeg: '🖼', png: '🖼', gif: '🖼', mp4: '🎬', mp3: '🎵', zip: '📦' };
+    return map[ext] || '📎';
+  }
+
+  function formatSize(bytes) {
+    if (bytes < 1024) return `${bytes} Б`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} КБ`;
+    return `${(bytes / 1024 / 1024).toFixed(1)} МБ`;
+  }
+
+  function handleFile(file) {
+    if (!file) return;
+    const ext = getExt(file.name);
+    const isText = TEXT_EXTS.includes(ext);
+    const tooBig = file.size > MAX_TEXT_BYTES;
+
+    // Show preview
+    document.getElementById('file-icon').textContent = getFileIcon(file.name);
+    document.getElementById('file-name').textContent = file.name;
+    document.getElementById('file-size').textContent = formatSize(file.size);
+    previewEl.classList.add('show');
+
+    bigFileMsgEl.classList.toggle('show', !isText || tooBig);
+    dropZone.style.display = 'none';
+
+    if (isText && !tooBig) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        fileData = { name: file.name, size: file.size, content: e.target.result, isText: true, tooBig: false };
+        updateMainBtn();
+      };
+      reader.readAsText(file, 'utf-8');
+    } else {
+      fileData = { name: file.name, size: file.size, content: null, isText, tooBig };
+      updateMainBtn();
+    }
+  }
+
+  function clearFile() {
+    fileData = null;
+    fileInput.value = '';
+    previewEl.classList.remove('show');
+    bigFileMsgEl.classList.remove('show');
+    dropZone.style.display = '';
+    updateMainBtn();
+  }
+
+  // Main button
+  tg.MainButton.setText('💾 Сохранить').show();
+  tg.MainButton.disable();
+
+  function updateMainBtn() {
+    if (fileData && fileData.isText && !fileData.tooBig) {
+      tg.MainButton.enable();
+    } else {
+      tg.MainButton.disable();
+    }
+  }
+
+  tg.MainButton.onClick(() => {
+    if (!fileData || !fileData.content) return;
+    const noteName = document.getElementById('note-name').value.trim();
+    tg.MainButton.showProgress(true);
+    tg.sendData(JSON.stringify({
+      type: 'file',
+      name: noteName || fileData.name.replace(/\.[^.]+$/, ''),
+      content: fileData.content
+    }));
+  });
+</script>
+</body>
+</html>

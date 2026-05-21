@@ -1,0 +1,381 @@
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Patrick+Hand&display=swap');
+
+:root {
+  --bg-deep: #0D1B2A;
+  --bg-medium: #1B2A3C;
+  --bg-card: #1E3248;
+  --bmo-green: #7BC8A4;
+  --bmo-screen: #A8E6CF;
+  --bmo-dark: #4A9B7F;
+  --finn-gold: #FFD700;
+  --jake-orange: #F0A500;
+  --princess-pink: #FF6B9D;
+  --candy-blue: #74B9FF;
+  --marceline-purple: #9B59B6;
+  --text-light: #E8F4FD;
+  --text-dim: #8BAFC8;
+  --border-glow: rgba(123, 200, 164, 0.4);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Patrick Hand', cursive;
+  background: var(--bg-deep);
+  color: var(--text-light);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ── Stars background ── */
+.stars {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.star {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle var(--dur, 3s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.4); }
+}
+
+/* ── Floating clouds ── */
+.cloud {
+  position: fixed;
+  background: rgba(116, 185, 255, 0.07);
+  border-radius: 50px;
+  pointer-events: none;
+  z-index: 0;
+  animation: drift var(--dur, 20s) linear infinite;
+}
+
+.cloud::before, .cloud::after {
+  content: '';
+  position: absolute;
+  background: rgba(116, 185, 255, 0.07);
+  border-radius: 50%;
+}
+
+@keyframes drift {
+  from { transform: translateX(-120%); }
+  to { transform: translateX(120vw); }
+}
+
+/* ── Page wrapper ── */
+.page {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 16px 32px;
+}
+
+/* ── BMO character ── */
+.bmo-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.bmo-svg {
+  width: 90px;
+  height: auto;
+  filter: drop-shadow(0 0 12px rgba(123, 200, 164, 0.6));
+}
+
+/* ── Title ── */
+.title {
+  font-family: 'Bangers', cursive;
+  font-size: 2rem;
+  letter-spacing: 3px;
+  text-align: center;
+  background: linear-gradient(135deg, var(--bmo-green), var(--candy-blue), var(--princess-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 4px;
+  animation: gradient-shift 4s ease infinite;
+  background-size: 200% 200%;
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  text-align: center;
+  margin-bottom: 24px;
+  letter-spacing: 1px;
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glow);
+  border-radius: 20px;
+  padding: 20px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 0 20px rgba(123, 200, 164, 0.1);
+  animation: slide-up 0.4s ease both;
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Nav buttons (index page) ── */
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  max-width: 420px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-glow);
+  border-radius: 20px;
+  color: var(--text-light);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.1rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  animation: slide-up 0.4s ease both;
+  box-shadow: 0 0 15px rgba(123, 200, 164, 0.08);
+}
+
+.nav-btn:nth-child(1) { animation-delay: 0.1s; }
+.nav-btn:nth-child(2) { animation-delay: 0.2s; }
+.nav-btn:nth-child(3) { animation-delay: 0.3s; }
+
+.nav-btn:active {
+  transform: scale(0.97);
+  border-color: var(--bmo-green);
+  box-shadow: 0 0 20px rgba(123, 200, 164, 0.3);
+}
+
+.nav-btn .icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 6px currentColor);
+}
+
+.nav-btn .label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav-btn .label strong {
+  font-size: 1.1rem;
+}
+
+.nav-btn .label span {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+/* colour accents per button */
+.nav-btn.thought { border-color: rgba(255, 215, 0, 0.3); }
+.nav-btn.thought:active { border-color: var(--finn-gold); box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+
+.nav-btn.file { border-color: rgba(116, 185, 255, 0.3); }
+.nav-btn.file:active { border-color: var(--candy-blue); box-shadow: 0 0 20px rgba(116, 185, 255, 0.3); }
+
+.nav-btn.chat { border-color: rgba(155, 89, 182, 0.3); }
+.nav-btn.chat:active { border-color: var(--marceline-purple); box-shadow: 0 0 20px rgba(155, 89, 182, 0.3); }
+
+/* ── Form elements ── */
+.field-label {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: block;
+}
+
+textarea, input[type="text"] {
+  width: 100%;
+  background: var(--bg-medium);
+  border: 1px solid rgba(123, 200, 164, 0.3);
+  border-radius: 14px;
+  padding: 14px;
+  color: var(--text-light);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1rem;
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+textarea:focus, input[type="text"]:focus {
+  border-color: var(--bmo-green);
+  box-shadow: 0 0 12px rgba(123, 200, 164, 0.2);
+}
+
+textarea {
+  min-height: 140px;
+}
+
+/* ── Category chips ── */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.chip {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(123, 200, 164, 0.3);
+  background: var(--bg-medium);
+  color: var(--text-dim);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chip.active, .chip:hover {
+  background: var(--bmo-green);
+  color: var(--bg-deep);
+  border-color: var(--bmo-green);
+}
+
+/* ── File drop zone ── */
+.drop-zone {
+  width: 100%;
+  min-height: 140px;
+  border: 2px dashed rgba(116, 185, 255, 0.4);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 20px;
+  text-align: center;
+}
+
+.drop-zone:hover, .drop-zone.over {
+  border-color: var(--candy-blue);
+  background: rgba(116, 185, 255, 0.05);
+}
+
+.drop-zone .dz-icon { font-size: 2.5rem; }
+.drop-zone .dz-text { color: var(--text-dim); font-size: 0.9rem; }
+.drop-zone .dz-hint { color: rgba(139, 175, 200, 0.5); font-size: 0.75rem; }
+
+/* ── File preview ── */
+.file-preview {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: var(--bg-medium);
+  border-radius: 14px;
+  border: 1px solid rgba(123, 200, 164, 0.3);
+  margin-top: 12px;
+}
+
+.file-preview.show { display: flex; }
+.file-preview .file-icon { font-size: 2rem; }
+.file-preview .file-info { flex: 1; overflow: hidden; }
+.file-preview .file-name { font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file-preview .file-size { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
+.file-preview .remove-btn { cursor: pointer; color: var(--text-dim); font-size: 1.2rem; padding: 4px; }
+
+/* ── Status message ── */
+.status {
+  display: none;
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.status.success {
+  display: block;
+  background: rgba(123, 200, 164, 0.15);
+  border: 1px solid var(--bmo-green);
+  color: var(--bmo-green);
+}
+
+.status.error {
+  display: block;
+  background: rgba(255, 107, 157, 0.15);
+  border: 1px solid var(--princess-pink);
+  color: var(--princess-pink);
+}
+
+/* ── Divider ── */
+.divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border-glow), transparent);
+  margin: 16px 0;
+}
+
+/* ── Back link ── */
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-bottom: 16px;
+  align-self: flex-start;
+  transition: color 0.2s;
+}
+
+.back-btn:hover { color: var(--bmo-green); }
+
+/* ── Telegram MainButton hint ── */
+.tg-hint {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  margin-top: 12px;
+  padding: 0 8px;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bmo-dark); border-radius: 4px; }
